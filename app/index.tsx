@@ -18,14 +18,17 @@ const LoginScreen = () => {
 
       <View className="flex-1 items-center bg-white p-6">
 
+        <Text className='self-start ml-3 mb-2 color-dark_blue font-semibold'>Nome</Text>
         <TextInput
-          className="w-full bg-gray-200 rounded-md p-3 mb-10"
+          className="w-full bg-gray-200 rounded-md p-3 mb-5"
           placeholder="Nome"
           value={nome}
           onChangeText={setNome}
         />
+
+        <Text className='self-start ml-3 mb-2 color-dark_blue font-semibold'>Senha</Text>
         <TextInput
-          className="w-full bg-gray-200 rounded-md p-3 mb-10"
+          className="w-full bg-gray-200 rounded-md p-3 mb-14"
           placeholder="Senha"
           secureTextEntry
           value={senha}
@@ -38,7 +41,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         <Link href="/register" > 
-          <Text className="text-blue-400 mt-4 text-sm underline ">Não possui uma conta Aletheia? Cadastrar-se</Text>
+          <Text className="text-blue-400 mt-4 text-sm underline font-semibold">Não possui uma conta Aletheia? Cadastrar-se</Text>
         </Link>
       </View>
     </View>
