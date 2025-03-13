@@ -1,14 +1,50 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
+import { useState } from "react";
+import { Link } from 'expo-router';
 
-const Home = () => {
+
+const LoginScreen = () => {
+
+  const [nome, setNome] = useState("");
+  const [senha, setSenha] = useState("");
+
   return (
-    <View>
-      <Text className="text-2xl font-bold">Home</Text>
+    <View className='flex-1 ml-10 mr-10' >
+
+      <View className='mt-[25%]'>
+        <Image source={require("../assets/images/AletheiaLogo.png")} className="w-21 h-21 self-center" />
+      </View>
+
+      <View className="flex-1 items-center bg-white p-6">
+
+        <TextInput
+          className="w-full bg-gray-200 rounded-md p-3 mb-10"
+          placeholder="Nome"
+          value={nome}
+          onChangeText={setNome}
+        />
+        <TextInput
+          className="w-full bg-gray-200 rounded-md p-3 mb-10"
+          placeholder="Senha"
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+        />
+
+
+        <TouchableOpacity className="w-full bg-dark_blue p-3 rounded-md mb-20" onPress={() => alert("Login")}>
+          <Text className="text-white text-center font-bold">Entrar</Text>
+        </TouchableOpacity>
+
+        <Link href="/register" > 
+          <Text className="text-blue-400 mt-4 text-sm underline ">Não possui uma conta Aletheia? Cadastrar-se</Text>
+        </Link>
+      </View>
     </View>
   )
 }
 
-export default Home
+export default LoginScreen
 
 const styles = StyleSheet.create({})
