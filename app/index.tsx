@@ -6,24 +6,24 @@ import { Link } from 'expo-router';
 
 const LoginScreen = () => {
 
-  const [nome, setNome] = useState("");
+  const [cro, setCro] = useState("");
   const [senha, setSenha] = useState("");
 
   return (
     <View className='flex-1 ml-10 mr-10' >
 
-      <View className='mt-[25%]'>
+      <View className='mt-[20%]'>
         <Image source={require("../assets/images/AletheiaLogo.png")} className="w-21 h-21 self-center" />
       </View>
 
       <View className="flex-1 items-center bg-white p-6">
 
-        <Text className='self-start ml-3 mb-2 color-dark_blue font-semibold'>Nome</Text>
+        <Text className='self-start ml-3 mb-2 color-dark_blue font-semibold'>Numero de CRO</Text>
         <TextInput
           className="w-full bg-gray-200 rounded-md p-3 mb-5"
-          placeholder="Nome"
-          value={nome}
-          onChangeText={setNome}
+          placeholder="CRO"
+          value={cro}
+          onChangeText={setCro}
         />
 
         <Text className='self-start ml-3 mb-2 color-dark_blue font-semibold'>Senha</Text>
