@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'reac
 import React from 'react'
 import { useState } from "react";
 import { Link } from 'expo-router';
+import Footer from '../components/footer';
 
 
 const LoginScreen = () => {
@@ -35,10 +36,13 @@ const LoginScreen = () => {
           onChangeText={setSenha}
         />
 
-
+        <Link href="/home" asChild>
         <TouchableOpacity className="w-full bg-dark_blue p-3 rounded-md mb-20" onPress={() => alert("Login")}>
-          <Text className="text-white text-center font-bold">Entrar</Text>
+          
+            <Text className="text-white text-center font-bold">Entrar</Text>
+          
         </TouchableOpacity>
+        </Link>
 
         <Link href="/register" > 
           <Text className="text-blue-400 mt-4 text-sm underline font-semibold">Não possui uma conta Aletheia? Cadastrar-se</Text>
