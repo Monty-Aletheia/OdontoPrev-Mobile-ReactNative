@@ -15,7 +15,7 @@ const registerScreen = () => {
       <View className='flex-1 ml-10 mr-10' >
   
         <View className='mt-[10%]'>
-          <Image source={require("../assets/images/AletheiaLogo.png")} className="w-21 h-21 self-center" />
+          <Image source={require("../assets/images/AletheiaLogo.png")} className="w-44 h-52 self-center" />
         </View>
   
         <View className="flex-1 items-center bg-white p-6">

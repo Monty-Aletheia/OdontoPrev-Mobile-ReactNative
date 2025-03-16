@@ -14,7 +14,7 @@ const LoginScreen = () => {
       <View className='flex-1 ml-10 mr-10 bg-white' >
 
         <View className='mt-[20%]'>
-          <Image source={require("../assets/images/AletheiaLogo.png")} className="w-21 h-21 self-center" />
+          <Image source={require("../assets/images/AletheiaLogo.png")} className="w-44 h-52 self-center" />
         </View>
 
         <View className="flex-1 items-center bg-white p-6">
