@@ -10,53 +10,57 @@ const TabsFooter = () => {
           backgroundColor: "#6B889D",
           height: 80,
         },
-        tabBarShowLabel: false
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
         name="profile"
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Image
               source={require("../assets/images/profile_icon.png")}
               style={{
                 width: 65,
                 height: 65,
-                marginTop: 40
+                marginTop: 40,
               }}
             />
           ),
         }}
       />
 
-    <Tabs.Screen
+      <Tabs.Screen
         name="add"
         options={{
+          headerShown: false,
+
+          title: "add",
           tabBarIcon: () => (
             <Image
               source={require("../assets/images/add_icon.png")}
               style={{
                 width: 65,
                 height: 65,
-                marginTop: 40
+                marginTop: 40,
               }}
             />
           ),
         }}
       />
-      
 
-      
       <Tabs.Screen
         name="list"
         options={{
+          headerShown: false,
+          title: "List",
           tabBarIcon: () => (
             <Image
               source={require("../assets/images/list_icon.png")}
               style={{
                 width: 75,
                 height: 65,
-                marginTop: 40
+                marginTop: 40,
               }}
             />
           ),
