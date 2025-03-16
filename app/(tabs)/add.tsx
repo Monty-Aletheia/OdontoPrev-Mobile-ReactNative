@@ -1,7 +1,16 @@
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useState } from 'react'
 
 const Add = () => {
+
+  const [patient, setPatient] = useState('')
+  const [date, setDate] = useState('')
+  const [consultationValue, setConsultationValue] = useState('')
+  const [description, setDescription] = useState('')
+
+
+
   return (
     <View className='flex-1 bg-white'>
     <View className='flex-1 mt-[10%] mr-5 ml-5 bg-white items-center'>
@@ -14,27 +23,27 @@ const Add = () => {
         
         <View className='w-[80%]'>
           <Text className='text-lg color-dark_blue ml-3 mb-2'>Paciente</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5"></TextInput>
+          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={patient} onChangeText={setPatient}></TextInput>
         </View>
 
         <View className='w-[80%]'>
           <Text className='text-lg color-dark_blue ml-3  mb-2'>Data da consulta</Text>
-          <TextInput placeholder="DD-MM-YYYY" className="w-full bg-gray-200 rounded-md p-3 mb-5" ></TextInput>
+          <TextInput placeholder="DD-MM-YYYY" className="w-full bg-gray-200 rounded-md p-3 mb-5" value={date} onChangeText={setDate}></TextInput>
         </View>
 
         <View className='w-[80%]'>
           <Text className='text-lg color-dark_blue ml-3 mb-2'>Valor da consulta (R$)</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" ></TextInput>
+          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={consultationValue} onChangeText={setConsultationValue}></TextInput>
         </View>
          
 
         <View className='w-[80%] mb-14'>
           <Text className='text-lg color-dark_blue ml-3 mb-2'>Descrição (Opcional)</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" ></TextInput>
+          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={description} onChangeText={setDescription}></TextInput>
         </View>
 
-        <TouchableOpacity className="w-[80%] bg-dark_blue p-3 rounded-md" onPress={() => alert(cro + " " + nome + " " + specialty + " " + senha)}>
-          <Text className="text-white text-center font-bold">Adicionar</Text>
+        <TouchableOpacity className="w-[80%] bg-dark_blue p-3 rounded-md" onPress={() => alert(patient + " " + consultationValue + " " + date + " " + description)}>
+          <Text className="text-white text-center font-bold" >Adicionar</Text>
         </TouchableOpacity>
 
       </View>
