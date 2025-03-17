@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
+import { Link } from "expo-router"; 
 
 type ListItemProps = {
     name: string;
@@ -23,9 +24,11 @@ const ListItems: React.FC<ListItemProps> = ({name , date, price}) => {
 
     
       <View>
+        <Link href="/details" asChild>
         <TouchableOpacity>
             <Image source={require("../assets/images/arrow_right.png")} className="w-14 h-14 mt-3 mr-3"/>
         </TouchableOpacity>
+        </Link>
       </View>
 
     </View>
