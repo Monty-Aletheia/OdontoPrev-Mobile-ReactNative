@@ -37,7 +37,7 @@ const LoginScreen = () => {
           />
 
           <Link href="/profile" asChild>
-          <TouchableOpacity className="w-full bg-dark_blue p-3 rounded-md mb-20" onPress={() => alert("Login")}>
+          <TouchableOpacity className="w-full bg-dark_blue p-3 rounded-md mb-20" onPress={() => alert(cro + " " + senha)}>
 
               <Text className="text-white text-center font-bold">Entrar</Text>
 
