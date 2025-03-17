@@ -21,12 +21,11 @@ Certifique-se de ter os seguintes softwares instalados:
 ### **Passos para rodar o projeto**
 1. **Clone o repositório:**
    ```sh
-   git clone https://github.com/seu-repositorio/aletheia.git
-   cd aletheia
+   git clone https://github.com/Monty-Aletheia/OdontoPrev-Mobile-ReactNative.git
+   cd OdontoPrev-Mobile-ReactNative
    ```
 2. **Instale as dependências do frontend:**
    ```sh
-   cd app
    npm install
    ```
 3. **Inicie o aplicativo:**
