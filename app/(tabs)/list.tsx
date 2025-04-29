@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
-import ListItems from '../../components/item'
+import ListItems from '../../components/Item'
 
 const DATA = [
   { id: "1", name: "Pedro Lucca Medeiros Miranda", date: "11/08/2004", price: "R$20.000" },

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import TabsFooter from '../../components/tabs'
+import TabsFooter from '../../components/Tabs'
 
 const TabsLayout = () => {
   return (
