@@ -1,24 +1,33 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import React, { useEffect } from 'react'
 import { useAuth } from '../../components/AuthProvider';
 
 
 
 const Home = () => {
-  const { userName } = useAuth();
+  const { getDentistById, isSignedIn, dentist, signOut } = useAuth();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      getDentistById();
+    }
+  }, [isSignedIn]);
 
   return (
     <View className='flex-1 mt-[20%] mr-5 ml-5'>
       
       <View className='flex-1  items-center'>
 
-        <View className="h-auto w-auto ">
-          <Image source={require("../../assets/images/user_picture.png")} className="w-52 h-52 self-center" />
-        </View>
+        <Pressable onPress={signOut}>
+
+            <Image source={require("../../assets/images/user_picture.png")} className="w-52 h-52 self-center" />
+
+        </Pressable>
 
 
         <View>
-          <Text className='mt-20 color-dark_blue font-bold text-xl'>{userName}</Text>
+          {dentist ? (<Text className='mt-20 color-dark_blue font-bold text-xl'>{dentist?.name}</Text>
+        ) : <Text className='mt-20 color-dark_blue font-bold text-xl'>Carregando informações...</Text>}
         </View>
 
         <View className='mt-20 bg-white w-[85%] mb-32 rounded-md shadow-lg flex-1 flex-row justify-between pr-10 pl-10 pt-10'>

@@ -3,10 +3,7 @@ import React from 'react'
 import TabsFooter from '../../components/Tabs'
 
 const TabsLayout = () => {
-  return (
-    <TabsFooter/>
-  )
-    
+  return <TabsFooter/>
 }
 
 export default TabsLayout

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
-import { Link, useRouter } from "expo-router";
+import { Link, Redirect, useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "../components/AuthProvider";
@@ -17,7 +17,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginScreen = () => {
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, isSignedIn } = useAuth();
   const {
     control,
     handleSubmit,
@@ -30,11 +30,20 @@ const LoginScreen = () => {
     },
   });
 
-  function handleLogin(data: LoginFormData) {
-    signIn(data.registrationNumber, data.password)
-    router.replace("/profile")
+  if (isSignedIn) {
+    return <Redirect href="/profile" />;
+  }
+
+  async function handleLogin(data: LoginFormData) {
+    const success = await signIn(data.registrationNumber, data.password)
+    if (success) {
+      router.replace("/profile");
+    } else {
+      console.log("Falha no login");
+    }
 
   }
+  
 
   return (
     <View className="flex-1 w-[100%] h-[100%] bg-white">

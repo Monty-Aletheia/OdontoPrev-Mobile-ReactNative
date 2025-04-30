@@ -7,6 +7,10 @@ import {
 } from "react";
 import api from "../service/api";
 import { jwtDecode } from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SplashScreen from "./SplashScreen";
+import { router } from "expo-router";
+
 
 
 
@@ -16,6 +20,10 @@ type AuthContextType = {
   signOut: () => void;
   userName: string;
   isSignedIn: boolean;
+  getDentistById: () => Promise<void>;
+  dentist: User | null;
+  isLoading: boolean;
+
 };
 
 interface CustomJwtPayload {
@@ -35,6 +43,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 type User = {
+  id: string;
   name: string;
   specialty: string;
   registrationNumber: string;
@@ -47,6 +56,31 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [dentist, setDentist] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadStorageData = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem("@userId");
+        const signedIn = await AsyncStorage.getItem("@isSignedIn");
+
+        if (storedUserId && signedIn === "true") {
+          console.log(storedUserId)
+          console.log(signedIn)
+          setUserId(storedUserId);
+          setIsSignedIn(true);
+        } 
+      } catch (e) {
+        console.error("Erro ao carregar dados do AsyncStorage", e);
+      } finally {
+        setIsLoading(false);
+        
+      }
+    };
+
+    loadStorageData();
+  }, []);
 
   const signIn = async (registrationNumber: string, password: string) => {
     try {
@@ -61,12 +95,15 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       const decoded = jwtDecode<CustomJwtPayload>(token);
       console.log(decoded)
       const id = decoded.id
+      const username = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
       console.log(id)
 
+      await AsyncStorage.setItem("@userId", id);
+      await AsyncStorage.setItem("@isSignedIn", "true");
   
-      // setUserId(token);
-      // setIsSignedIn(true);
-  
+      setUserName(username)
+      setUserId(id);
+      setIsSignedIn(true);
   
       return true;
     } catch (error) {
@@ -101,17 +138,33 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
    }
   };
 
-  const signOut = () => {
+  const getDentistById = async () => {
+    try {
+      const response = await api.get(`/dentists/${userId}`);
+      const data = response.data;
+      setDentist(data);
+      console.log("Dentista encontrado:", data);
+    } catch (error) {
+      console.error("Erro ao buscar dentista por ID:", error);
+    }
+  };
+
+  const signOut = async () => {
     setUserId("");
     setUserName("");
     setIsSignedIn(false);
+    await AsyncStorage.removeItem("@userId");
+    await AsyncStorage.removeItem("@isSignedIn");
+    router.replace("/")
+
   };
 
-  const value = { signIn, signUp, signOut, userName, isSignedIn, userId };
+
+  const value = { signIn, signUp, signOut, userName, isSignedIn, userId, getDentistById, dentist, isLoading };
 
 
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{isLoading ? <SplashScreen /> : children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
