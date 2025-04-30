@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ControlledTextInput from "../components/ControlledTextInput";
 import { useAuth } from "../components/AuthProvider";
 
+
+
 // Validação com zod
 const registerSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
