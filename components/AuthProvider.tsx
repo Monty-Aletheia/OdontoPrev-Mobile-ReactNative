@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   PropsWithChildren,
   createContext,
@@ -7,7 +6,9 @@ import {
   useState,
 } from "react";
 import api from "../service/api";
-import { boolean } from "yup";
+import { jwtDecode } from "jwt-decode";
+
+
 
 type AuthContextType = {
   signIn: (registrationNumber: string, password: string) => Promise<boolean>;
@@ -16,6 +17,18 @@ type AuthContextType = {
   userName: string;
   isSignedIn: boolean;
 };
+
+interface CustomJwtPayload {
+  id: string;
+  registrationNumber: string;
+  specialty: string;
+  claimsRate: string;
+  riskStatus: string;
+  aud: string;
+  iss: string;
+  exp: number;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
+}
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -31,7 +44,6 @@ type User = {
 };
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [users, setUsers] = useState<User[]>([]);
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -43,11 +55,17 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         password,
       });
   
-      const { name, id } = response.data; // depende do que sua API retorna
+      const { token } = response.data;
+      console.log(token)
+
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      console.log(decoded)
+      const id = decoded.id
+      console.log(id)
+
   
-      setUserId(id);
-      setUserName(name);
-      setIsSignedIn(true);
+      // setUserId(token);
+      // setIsSignedIn(true);
   
   
       return true;
@@ -68,7 +86,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         riskStatus
     });
 
-    if (reponse.status == 201){
+    if (reponse.status == 200){
         console.log("Usuario cadastrado")
         return true
     } else {
@@ -89,38 +107,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     setIsSignedIn(false);
   };
 
-  const value = { signIn, signUp, signOut, userName, isSignedIn };
+  const value = { signIn, signUp, signOut, userName, isSignedIn, userId };
 
-  useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const jsonUsers = await AsyncStorage.getItem("users");
-        if (jsonUsers) {
-          const parsedUsers = JSON.parse(jsonUsers);
-          setUsers(parsedUsers);
-          console.log("Usuários carregados com sucesso:", parsedUsers);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar os usuários:", error);
-      }
-    };
 
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    const saveUsers = async () => {
-      try {
-        const jsonUsers = JSON.stringify(users);
-        await AsyncStorage.setItem("users", jsonUsers);
-        console.log("Usuários salvos com sucesso:", jsonUsers);
-      } catch (error) {
-        console.error("Erro ao salvar os usuários:", error);
-      }
-    };
-
-    saveUsers();
-  }, [users]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
