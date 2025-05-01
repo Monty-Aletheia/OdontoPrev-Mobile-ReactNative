@@ -4,7 +4,6 @@ import ListItems from '../../components/Item'
 import api from '../../service/api';
 import { Consultation } from '../../types/consultation';
 import { useAuth } from '../../components/AuthProvider';
-import { formatDate, formatName } from '../../utils/format';
 import { retryRequest } from '../../utils/retry';
 
 const List = () => {
@@ -38,7 +37,7 @@ const List = () => {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => 
 
-        <ListItems name={formatName(item.patient.name)} date={formatDate(item.consultationDate)} price={item.consultationValue} />
+        <ListItems consultation={item} />
 
       } 
       />
@@ -48,4 +47,3 @@ const List = () => {
 
 export default List
 
-const styles = StyleSheet.create({})
