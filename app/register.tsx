@@ -40,9 +40,13 @@ const RegisterScreen = () => {
     },
   });
 
-  function handleRegister(data: RegisterFormData) {
-    signUp(data.name, data.specialty, data.registrationNumber, data.claimsRate, data.riskStatus, data.password)
-    router.replace("/");
+  async function handleRegister(data: RegisterFormData) {
+    const success = await signUp(data.name, data.specialty, data.registrationNumber, data.claimsRate, data.riskStatus, data.password)
+    if (success) {
+      router.replace("/");
+    } else {
+      console.log("Falha no cadastro");
+    }
   }
 
   return (
@@ -63,7 +67,6 @@ const RegisterScreen = () => {
             control={control}
             name="name"
             placeholder="Nome"
-            keyboardType="default"
             error={errors.name}
           />
 
@@ -74,7 +77,6 @@ const RegisterScreen = () => {
             control={control}
             name="specialty"
             placeholder="Especialidade"
-            keyboardType="default"
             error={errors.specialty}
           />
 
@@ -84,7 +86,6 @@ const RegisterScreen = () => {
           <ControlledTextInput
             control={control}
             name="registrationNumber"
-            keyboardType="default"
             placeholder="CRO"
             error={errors.registrationNumber}
           />
@@ -96,7 +97,6 @@ const RegisterScreen = () => {
             control={control}
             name="password"
             placeholder="Senha"
-            keyboardType="default"
             secureTextEntry
             error={errors.password}
           />

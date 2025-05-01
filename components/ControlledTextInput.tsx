@@ -17,7 +17,7 @@ type Props = {
   placeholder: string;
   error?: any;
   secureTextEntry?: boolean;
-  keyboardType:
+  keyboardType?:
     | "default"
     | "email-address"
     | "number-pad"
@@ -27,7 +27,8 @@ type Props = {
     | "decimal-pad"
     | "web-search"
     | "visible-password";
-    mode?: "date" | "text" | "select";
+  mode?: "date" | "text" | "select";
+  isNumber?: boolean
 
 };
 
@@ -36,10 +37,11 @@ const ControlledTextInput = ({
   control,
   secureTextEntry,
   placeholder,
-  keyboardType,
+  keyboardType = "default",
   name,
   error,
-  mode = "text"
+  mode = "text",
+  isNumber = false
 }: Props) => {
   const {
     field: { onChange, value },
@@ -52,14 +54,14 @@ const ControlledTextInput = ({
 
   const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const {
-      type,
-      nativeEvent: { timestamp, utcOffset },
+      type
     } = event;
   
     setShowPicker(false);
   
     if (type === "set" && selectedDate) {
-      onChange(dayjs(selectedDate).format("DD/MM/YYYY"));
+      onChange(dayjs(selectedDate).toISOString());
+      console.log(selectedDate)
       
     }
   };
@@ -68,7 +70,6 @@ const ControlledTextInput = ({
     try {
       const response = await api.get("/patients")
       const data = response.data
-      console.log(data)
       setPatients(data)
     } catch (error) {
       console.error("Erro ao buscar pacientes:", error);
@@ -85,7 +86,7 @@ const ControlledTextInput = ({
           onPress={() => setShowPicker(true)}
           className="w-full bg-gray-200 rounded-md p-3 mb-5"
         >
-          <Text className="ml-1">{value ? value : placeholder}</Text>
+          <Text style={{color: value ? "#000" : "#68696b"}} className="ml-1">{value ? dayjs(value).format("DD/MM/YYYY") : placeholder}</Text>
         </Pressable>
         {showPicker && (
           <RNDateTimePicker
@@ -108,17 +109,22 @@ const ControlledTextInput = ({
       <>
         <View className="w-full bg-gray-200 rounded-md mb-5 p-0">
           <Picker
-                style={{height: 47}}
+                style={{height: 46}}
                 selectedValue={patientId}
-                onValueChange={(itemValue) => setPatientId(itemValue)}
+                onValueChange={(itemValue) => {
+                  onChange(itemValue)
+                  setPatientId(itemValue) 
+                  console.log(patientId);                  
+                } }
               >
                 
-                <Picker.Item label="Selecione o paciente" value="" enabled={false}  
+                <Picker.Item label="Selecione o Paciente" value="" enabled={false}  
                 style={{ 
                   margin: 0, 
                   padding: 0,
                   fontSize: 13 , 
-                  color: "#68696b"}}/>
+                  color: "#68696b",
+                  }}/>
 
                 {patients.map((p) => (
                   <Picker.Item key={p.id} label={p.name} value={p.id} 
@@ -128,6 +134,7 @@ const ControlledTextInput = ({
                 ))}
           </Picker>
         </View>
+        {error && <Text className="text-red-500 self-start mb-2 ml-2 text-xs">{error.message}</Text>}
       </>
 
     )
@@ -141,7 +148,16 @@ const ControlledTextInput = ({
         placeholder={placeholder}
         keyboardType={keyboardType}
         onChangeText={(text) => {
-          onChange(text);
+              if (isNumber) {
+                const numericValue = Number(text);
+                onChange(numericValue);
+                console.log(numericValue);
+                
+              } else {
+                onChange(text);
+                console.log(text);
+                
+              }
         }}
         value={value}
         

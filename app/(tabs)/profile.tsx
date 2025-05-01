@@ -1,11 +1,16 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
 import { useAuth } from '../../components/AuthProvider';
+import { Redirect } from 'expo-router';
 
 
 
 const Home = () => {
   const { getDentistById, isSignedIn, dentist, signOut } = useAuth();
+
+  if (!isSignedIn){
+    return <Redirect href="/"/>
+  }
 
   useEffect(() => {
     if (isSignedIn) {

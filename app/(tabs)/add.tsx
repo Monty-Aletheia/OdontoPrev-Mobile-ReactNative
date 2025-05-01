@@ -1,58 +1,139 @@
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { useState } from 'react'
+import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import ControlledTextInput from '../../components/ControlledTextInput';
+import { useRouter } from 'expo-router';
+import api from '../../service/api';
+import { useAuth } from '../../components/AuthProvider';
+
+const schema = z.object({
+  patientId: z.string().min(1, 'Informe o paciente'),
+  consultationDate: z.string().min(1, 'Informe a data'),
+  consultationValue: z.number().min(1, 'Informe o valor'),
+  dentistIds: z.array(z.string()).min(1),
+  riskStatus: z.number().min(1) ,
+  description: z.string().min(0)
+});
+
+type FormData = z.infer<typeof schema>;
 
 const Add = () => {
+    const { dentist } = useAuth()
+    const router = useRouter();
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<FormData>({
+      resolver: zodResolver(schema),
+      defaultValues: {
+        patientId: "",
+        consultationDate: "",
+        consultationValue: 0,
+        riskStatus: 1,
+        description: " ",
+        dentistIds: [dentist?.id]
+      },
+    });
 
-  const [patient, setPatient] = useState('')
-  const [date, setDate] = useState('')
-  const [consultationValue, setConsultationValue] = useState('')
-  const [description, setDescription] = useState('')
 
+    const createConsultation = async (patientId: string, consultationDate: string, consultationValue: number, description?: string, dentistIds?: string[], riskStatus?: number) => {
+      try{
+       const reponse = await api.post("/consultations", {
+           patientId,
+           consultationDate,
+           consultationValue,
+           description,
+           dentistIds,
+           riskStatus
 
+       });
+   
+       if (reponse.status == 201){
+           console.log("Consulta cadastrada")
+           return true
+       } else {
+           console.log("Falha ao criar consulta:", reponse.status)
+           return false
+       }
+   
+   
+      } catch(error){
+       console.log("Erro durante a criação da consulta:", error)
+       return false
+      }
+     };
+
+     async function handleCreateConsultation(data: FormData) {
+      console.log(data)
+      const sucess = await createConsultation(data.patientId, data.consultationDate, data.consultationValue, data.description, data.dentistIds, data.riskStatus)
+      if (sucess) {
+        router.replace("/list");
+      } else {
+        console.log("Erro ao criar a consulta")
+      }
+    }
 
   return (
-    <View className='flex-1 bg-white'>
-    <View className='flex-1 mt-[10%] mr-5 ml-5 bg-white items-center'>
-      
-      <View className='flex-row justify-center items-center mb-14'>
-        <Image source={require("../../assets/images/AletheiaLogo.png")} className="w-20 h-24" />
-        <Text className='font-black text-xl color-dark_blue ml-5'>Nova Consulta</Text>
-      </View>
-
-        
-        <View className='w-[80%]'>
-          <Text className='text-lg color-dark_blue ml-3 mb-2'>Paciente</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={patient} onChangeText={setPatient}></TextInput>
+    <View className="flex-1 bg-white">
+      <View className="flex-1 mt-[10%] mr-5 ml-5 bg-white items-center">
+        <View className="flex-row justify-center items-center mb-14">
+          <Image source={require('../../assets/images/AletheiaLogo.png')} className="w-20 h-24" />
+          <Text className="font-black text-xl color-dark_blue ml-5">Nova Consulta</Text>
         </View>
 
-        <View className='w-[80%]'>
-          <Text className='text-lg color-dark_blue ml-3  mb-2'>Data da consulta</Text>
-          <TextInput placeholder="DD-MM-YYYY" className="w-full bg-gray-200 rounded-md p-3 mb-5" value={date} onChangeText={setDate}></TextInput>
+        <View className="w-[80%]">
+          <Text className="text-lg color-dark_blue ml-3 mb-2">Paciente</Text>
+          <ControlledTextInput
+            control={control}
+            name="patientId"
+            placeholder="Paciente"
+            mode='select'
+            error={errors.patientId}
+          />
         </View>
 
-        <View className='w-[80%]'>
-          <Text className='text-lg color-dark_blue ml-3 mb-2'>Valor da consulta (R$)</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={consultationValue} onChangeText={setConsultationValue}></TextInput>
+        <View className="w-[80%]">
+          <Text className="text-lg color-dark_blue ml-3 mb-2">Data da consulta</Text>
+          <ControlledTextInput
+            control={control}
+            name="consultationDate"
+            placeholder="Selecione a Data da Consulta"
+            mode='date'
+            error={errors.consultationDate}
+          />
         </View>
-         
 
-        <View className='w-[80%] mb-14'>
-          <Text className='text-lg color-dark_blue ml-3 mb-2'>Descrição (Opcional)</Text>
-          <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5" value={description} onChangeText={setDescription}></TextInput>
+        <View className="w-[80%]">
+          <Text className="text-lg color-dark_blue ml-3 mb-2">Valor da consulta (R$)</Text>
+          <ControlledTextInput
+            control={control}
+            name="consultationValue"
+            placeholder="Valor da consulta"
+            keyboardType='numeric'
+            isNumber
+            error={errors.consultationValue}
+          />
         </View>
 
-        <TouchableOpacity className="w-[80%] bg-dark_blue p-3 rounded-md" onPress={() => alert(patient + " " + consultationValue + " " + date + " " + description)}>
-          <Text className="text-white text-center font-bold" >Adicionar</Text>
+        <View className="w-[80%] mb-14">
+          <Text className="text-lg color-dark_blue ml-3 mb-2">Descrição (Opcional)</Text>
+          <ControlledTextInput
+            control={control}
+            name="description"
+            placeholder="Descrição"
+            error={errors.description}
+          />
+        </View>
+
+        <TouchableOpacity className="w-[80%] bg-dark_blue p-3 rounded-md" onPress={handleSubmit(handleCreateConsultation)}>
+          <Text className="text-white text-center font-bold">Adicionar</Text>
         </TouchableOpacity>
-
       </View>
-      </View>
+    </View>
+  );
+};
 
-
-  )
-}
-
-export default Add
-
-const styles = StyleSheet.create({})
+export default Add;

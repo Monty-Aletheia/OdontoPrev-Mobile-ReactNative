@@ -32,7 +32,7 @@ const LoginScreen = () => {
 
   if (isSignedIn) {
     return <Redirect href="/profile" />;
-  }
+  } 
 
   async function handleLogin(data: LoginFormData) {
     const success = await signIn(data.registrationNumber, data.password)
@@ -63,7 +63,6 @@ const LoginScreen = () => {
             control={control}
             name="registrationNumber"
             placeholder="CRO"
-            keyboardType="default"
             error={errors.registrationNumber}
           />
 
@@ -74,7 +73,6 @@ const LoginScreen = () => {
             control={control}
             name="password"
             placeholder="Senha"
-            keyboardType="default"
             secureTextEntry
             error={errors.password}
           />
