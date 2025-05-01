@@ -123,7 +123,7 @@ const Add = () => {
           <ControlledTextInput
             control={control}
             name="description"
-            placeholder="Descrição"
+            placeholder="Descriçao"
             error={errors.description}
           />
         </View>

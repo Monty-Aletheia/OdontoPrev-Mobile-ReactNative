@@ -7,6 +7,7 @@ import dayjs from "dayjs"
 import { Picker } from '@react-native-picker/picker';
 import api from "../service/api";
 import { Patient } from "../types/patient";
+import { retryRequest } from "../utils/retry";
 
 
 
@@ -67,13 +68,12 @@ const ControlledTextInput = ({
 
   const getPatients = async () => {
     try {
-      const response = await api.get("/patients")
-      const data = response.data
-      setPatients(data)
+      const response = await retryRequest(() => api.get("/patients"));
+      setPatients(response.data);
     } catch (error) {
-      console.error("Erro ao buscar pacientes:", error);
+      console.error("Erro após múltiplas tentativas:", error);
     }
-  }
+  };
 
   
 

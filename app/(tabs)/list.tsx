@@ -5,6 +5,7 @@ import api from '../../service/api';
 import { Consultation } from '../../types/consultation';
 import { useAuth } from '../../components/AuthProvider';
 import { formatDate, formatName } from '../../utils/format';
+import { retryRequest } from '../../utils/retry';
 
 const List = () => {
 
@@ -12,7 +13,7 @@ const List = () => {
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const getConsultations = async () => {
     try {
-      const response = await api.get("/consultations");
+      const response = await retryRequest(() => api.get("/consultations"), 3, 3000);
       const data = response.data;
   
       const filtered = data.filter((consultation: Consultation) =>
@@ -20,7 +21,7 @@ const List = () => {
       );
       setConsultations(filtered);
     } catch (error) {
-      console.error("Erro ao buscar consultas:", error);
+      console.error("Erro após múltiplas tentativas ao buscar consultas:", error);
     }
   };
 
