@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SplashScreen from "./SplashScreen";
 import { router } from "expo-router";
 import { CustomJwtPayload } from "../types/CustomJwtPayload";
+import { Dentist } from "../types/dentist";
 
 
 
@@ -22,7 +23,7 @@ type AuthContextType = {
   userName: string;
   isSignedIn: boolean;
   getDentistById: () => Promise<void>;
-  dentist: User | null;
+  dentist: Dentist | null;
   isLoading: boolean;
 
 };
@@ -32,21 +33,12 @@ export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
 
-type User = {
-  id: string;
-  name: string;
-  specialty: string;
-  registrationNumber: string;
-  claimsRate: number;
-  riskStatus: number;
-  password: string;
-};
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [dentist, setDentist] = useState<User | null>(null);
+  const [dentist, setDentist] = useState<Dentist | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

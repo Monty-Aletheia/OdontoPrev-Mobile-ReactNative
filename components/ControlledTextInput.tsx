@@ -7,7 +7,6 @@ import dayjs from "dayjs"
 import { Picker } from '@react-native-picker/picker';
 import api from "../service/api";
 import { Patient } from "../types/patient";
-import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 
 

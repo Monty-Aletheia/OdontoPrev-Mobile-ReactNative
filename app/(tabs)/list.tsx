@@ -1,24 +1,43 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ListItems from '../../components/Item'
-
-const DATA = [
-  { id: "1", name: "Pedro Lucca Medeiros Miranda", date: "11/08/2004", price: "R$20.000" },
-  { id: "2", name: "Pedro Lucca Medeiros Miranda", date: "11/08/2004", price: "R$20.000" },
-  { id: "3", name: "Pedro Lucca Medeiros Miranda", date: "11/08/2004", price: "R$20.000" },
-  { id: "4", name: "Pedro Lucca Medeiros Miranda", date: "11/08/2004", price: "R$20.000" },
-];
-
+import api from '../../service/api';
+import { Consultation } from '../../types/consultation';
+import { useAuth } from '../../components/AuthProvider';
+import { formatDate, formatName } from '../../utils/format';
 
 const List = () => {
+
+  const { dentist } = useAuth();
+  const [consultations, setConsultations] = useState<Consultation[]>([])
+  const getConsultations = async () => {
+    try {
+      const response = await api.get("/consultations");
+      const data = response.data;
+  
+      const filtered = data.filter((consultation: Consultation) =>
+        consultation.dentists.some((d) => d.id === dentist?.id)
+      );
+      setConsultations(filtered);
+    } catch (error) {
+      console.error("Erro ao buscar consultas:", error);
+    }
+  };
+
+  useEffect(()=>{
+    getConsultations()
+    
+  }, [])
+
+
   return (
     <View className='mt-14'>
       <FlatList
-      data={DATA}
+      data={consultations}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => 
 
-        <ListItems name={item.name} date={item.date} price={item.price} />
+        <ListItems name={formatName(item.patient.name)} date={formatDate(item.consultationDate)} price={item.consultationValue} />
 
       } 
       />
