@@ -39,12 +39,12 @@ const Home = () => {
             
           <View>
             <Text className='color-dark_blue font-black'>Especialidade:</Text>
-            <Text className='color-dark_blue'>Odontologia</Text>
+            <Text className='color-dark_blue'>{dentist?.specialty}</Text>
           </View>
 
           <View>
             <Text className='color-dark_blue font-black'>Numero de CRO:</Text>
-            <Text className='color-dark_blue '>380129</Text>
+            <Text className='color-dark_blue '>{dentist?.registrationNumber}</Text>
           </View>
 
         </View>

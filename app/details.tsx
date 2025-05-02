@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import api from '../service/api';
 import { retryRequest } from '../utils/retry';
 import { Consultation } from '../types/consultation';
@@ -8,7 +8,7 @@ import { formatDate, formatGender, formatName, formatPrice } from '../utils/form
 import SplashScreen from '../components/SplashScreen';
 
 const Details = () => {
-
+  const router = useRouter()
   const { id } = useLocalSearchParams();
   const [consultation, setConsultaion] = useState<Consultation>()
   const [isLoading, setLoading] = useState(true)
@@ -28,6 +28,15 @@ const Details = () => {
     }
   };
 
+  const deleteConsultationById = async () => {
+    try {
+      retryRequest(() => api.delete(`/consultations/${id}`), 3, 3000)
+      router.replace("/profile")
+    } catch (error){
+      console.error("Erro ao deletar consulta:", error)
+    }
+  }
+
   useEffect(() => {
     getConsultationById()
   }, [])
@@ -41,7 +50,21 @@ const Details = () => {
 
 
   return (
-    <View className='flex-1 mt-[20%] mr-5 ml-5'>
+    <View className='flex-1 mr-5 ml-5'>
+
+          <TouchableOpacity onPress={() => {Alert.alert(
+                          "Tem certeza?",
+                          "Você realmente deseja deletar esta consulta?",
+                          [
+                            { text: "Cancelar", style: "cancel" },
+                            { text: "Deletar", style: "destructive", onPress: deleteConsultationById }
+                          ]
+                        );
+                      }}>
+            <View>
+              <Image source={require("../assets/images/delete_icon.png")} className="w-11 h-11 self-end mt-5 mb-5" />
+            </View>
+          </TouchableOpacity>
           
           <View className='flex-1  items-center'>
     
@@ -54,10 +77,10 @@ const Details = () => {
               <Text className='mt-14 color-dark_blue font-bold text-xl text-center'>{consultation.patient.name}</Text>
             </View>
     
-            <View className='mt-14 bg-white w-[85%] mb-32 rounded-md shadow-lg flex-1 pr-6 pl-6 pt-10'>
+            <View className='h-auto mt-14 bg-white w-[85%] mb-32 rounded-md shadow-lg flex-1 pr-6 pl-6 pt-10'>
                 
 
-                <View className='flex-row justify-between'>
+                <View className='flex-row justify-between '>
 
                     <View>
 

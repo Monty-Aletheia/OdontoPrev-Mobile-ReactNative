@@ -5,15 +5,19 @@ import api from '../../service/api';
 import { Consultation } from '../../types/consultation';
 import { useAuth } from '../../components/AuthProvider';
 import { retryRequest } from '../../utils/retry';
+import { useFocusEffect } from 'expo-router';
 
 const List = () => {
 
+  const [counter, setCounter] = useState(0)
   const { dentist } = useAuth();
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const getConsultations = async () => {
     try {
-      const response = await retryRequest(() => api.get("/consultations"), 3, 3000);
+      const response = await retryRequest(() => api.get("/consultations"), 5, 2000);
       const data = response.data;
+      console.log("foi");
+      
   
       const filtered = data.filter((consultation: Consultation) =>
         consultation.dentists.some((d) => d.id === dentist?.id)
@@ -24,10 +28,11 @@ const List = () => {
     }
   };
 
-  useEffect(()=>{
-    getConsultations()
-    
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      getConsultations();
+    }, [])
+  );
 
 
   return (

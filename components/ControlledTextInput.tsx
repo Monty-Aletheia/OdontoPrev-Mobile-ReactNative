@@ -93,6 +93,7 @@ const ControlledTextInput = ({
             value={value ? new Date(value) : new Date()}
             display={Platform.OS === "ios" ? "spinner" : "default"}
             onChange={handleDateChange}
+            minimumDate={dayjs().toDate()}
           />
         )}
         {error && <Text className="text-red-500 self-start mb-2 ml-2 text-xs">{error.message}</Text>}
@@ -142,13 +143,14 @@ const ControlledTextInput = ({
 
   return (
     <>
-      <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5"
+      <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5 max-h-14"
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         keyboardType={keyboardType}
         onChangeText={(text) => {
               if (isNumber) {
-                const numericValue = Number(text);
+                const formattedText = text.replace(',', '.');
+                const numericValue = Number(formattedText);
                 onChange(numericValue);
                 console.log(numericValue);
                 

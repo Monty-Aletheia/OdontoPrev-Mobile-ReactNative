@@ -33,7 +33,7 @@ const Add = () => {
         consultationDate: "",
         consultationValue: 0,
         riskStatus: 1,
-        description: " ",
+        description: "",
         dentistIds: [dentist?.id]
       },
     });
