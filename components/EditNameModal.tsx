@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { Modal, View, Text, TextInput, TouchableOpacity } from "react-native";
 
 interface EditNameModalProps {
   visible: boolean;
@@ -8,7 +8,12 @@ interface EditNameModalProps {
   defaultValue?: string;
 }
 
-const EditNameModal: React.FC<EditNameModalProps> = ({ visible, onCancel, onSave, defaultValue = '' }) => {
+const EditNameModal: React.FC<EditNameModalProps> = ({
+  visible,
+  onCancel,
+  onSave,
+  defaultValue = "",
+}) => {
   const [name, setName] = useState(defaultValue);
 
   useEffect(() => {
@@ -24,7 +29,9 @@ const EditNameModal: React.FC<EditNameModalProps> = ({ visible, onCancel, onSave
     >
       <View className="flex-1 justify-center items-center bg-black/50">
         <View className="bg-white p-5 rounded-lg w-[80%] shadow-md">
-          <Text className="font-bold text-lg mb-2 text-dark_blue">Novo nome:</Text>
+          <Text className="font-bold text-lg mb-2 text-dark_blue">
+            Novo nome:
+          </Text>
 
           <TextInput
             placeholder="Digite o novo nome"

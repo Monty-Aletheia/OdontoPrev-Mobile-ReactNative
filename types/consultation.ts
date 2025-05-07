@@ -1,7 +1,6 @@
 import { Dentist } from "./dentist";
 import { Patient } from "./patient";
 
-
 export interface Consultation {
   id: string;
   consultationDate: string;
@@ -9,5 +8,5 @@ export interface Consultation {
   riskStatus: number;
   description: string | null;
   patient: Patient;
-  dentists: Dentist[]; 
+  dentists: Dentist[];
 }

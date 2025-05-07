@@ -1,54 +1,43 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import ListItems from '../../components/Item'
-import api from '../../service/api';
-import { Consultation } from '../../types/consultation';
-import { useAuth } from '../../components/AuthProvider';
-import { retryRequest } from '../../utils/retry';
-import { useFocusEffect } from 'expo-router';
+import {View, FlatList } from "react-native";
+import React, { useState } from "react";
+import ListItems from "../../components/Item";
+import { Consultation } from "../../types/consultation";
+import { useAuth } from "../../components/AuthProvider";
+import { useFocusEffect } from "expo-router";
+import { getConsultations } from "../../service/consultationService";
 
 const List = () => {
-
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(0);
   const { dentist } = useAuth();
-  const [consultations, setConsultations] = useState<Consultation[]>([])
-  const getConsultations = async () => {
+  const [consultations, setConsultations] = useState<Consultation[]>([]);
+
+  const loadConsultations = async () => {
     try {
-      const response = await retryRequest(() => api.get("/consultations"), 5, 2000);
-      const data = response.data;
-      console.log("foi");
-      
-  
-      const filtered = data.filter((consultation: Consultation) =>
-        consultation.dentists.some((d) => d.id === dentist?.id)
-      );
+      const filtered = await getConsultations(dentist?.id);
       setConsultations(filtered);
     } catch (error) {
-      console.error("Erro após múltiplas tentativas ao buscar consultas:", error);
+      console.error(
+        "Erro após múltiplas tentativas ao buscar consultas:",
+        error
+      );
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      getConsultations();
+      loadConsultations();
     }, [])
   );
 
-
   return (
-    <View className='mt-14'>
+    <View className="mt-14">
       <FlatList
-      data={consultations}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => 
-
-        <ListItems consultation={item} />
-
-      } 
+        data={consultations}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <ListItems consultation={item} />}
       />
     </View>
-  )
-}
+  );
+};
 
-export default List
-
+export default List;

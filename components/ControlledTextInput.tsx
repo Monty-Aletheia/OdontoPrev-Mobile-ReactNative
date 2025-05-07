@@ -1,15 +1,13 @@
-import { Controller, useController } from "react-hook-form";
-import { View, Text, TextInput, Pressable, Platform,  } from "react-native";
-import React, { useEffect, useState }from "react";
-import RNDateTimePicker from "@react-native-community/datetimepicker"; 
+import { useController } from "react-hook-form";
+import { View, Text, TextInput, Pressable, Platform } from "react-native";
+import React, { useEffect, useState } from "react";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import dayjs from "dayjs"
-import { Picker } from '@react-native-picker/picker';
+import dayjs from "dayjs";
+import { Picker } from "@react-native-picker/picker";
 import api from "../service/api";
 import { Patient } from "../types/patient";
 import { retryRequest } from "../utils/retry";
-
-
 
 type Props = {
   control: any;
@@ -28,10 +26,8 @@ type Props = {
     | "web-search"
     | "visible-password";
   mode?: "date" | "text" | "select";
-  isNumber?: boolean
-
+  isNumber?: boolean;
 };
-
 
 const ControlledTextInput = ({
   control,
@@ -41,28 +37,26 @@ const ControlledTextInput = ({
   name,
   error,
   mode = "text",
-  isNumber = false
+  isNumber = false,
 }: Props) => {
   const {
     field: { onChange, value },
   } = useController({ name, control });
 
   const [showPicker, setShowPicker] = useState(false);
-  const [patientId, setPatientId] = useState('');
+  const [patientId, setPatientId] = useState("");
   const [patients, setPatients] = useState<Patient[]>([]);
 
+  const handleDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date
+  ) => {
+    const { type } = event;
 
-  const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const {
-      type
-    } = event;
-  
     setShowPicker(false);
-  
+
     if (type === "set" && selectedDate) {
       onChange(dayjs(selectedDate).toISOString());
-      console.log(selectedDate)
-      
     }
   };
 
@@ -75,17 +69,16 @@ const ControlledTextInput = ({
     }
   };
 
-  
-
-
   if (mode === "date") {
     return (
       <>
-        <Pressable 
+        <Pressable
           onPress={() => setShowPicker(true)}
           className="w-full bg-gray-200 rounded-md p-3 mb-5"
         >
-          <Text style={{color: value ? "#000" : "#68696b"}} className="ml-1">{value ? dayjs(value).format("DD/MM/YYYY") : placeholder}</Text>
+          <Text style={{ color: value ? "#000" : "#68696b" }} className="ml-1">
+            {value ? dayjs(value).format("DD/MM/YYYY") : placeholder}
+          </Text>
         </Pressable>
         {showPicker && (
           <RNDateTimePicker
@@ -96,11 +89,15 @@ const ControlledTextInput = ({
             minimumDate={dayjs().toDate()}
           />
         )}
-        {error && <Text className="text-red-500 self-start mb-2 ml-2 text-xs">{error.message}</Text>}
+        {error && (
+          <Text className="text-red-500 self-start mb-2 ml-2">
+            {error.message}
+          </Text>
+        )}
       </>
     );
-  } if (mode === "select") {
-
+  }
+  if (mode === "select") {
     useEffect(() => {
       getPatients();
     }, []);
@@ -109,68 +106,72 @@ const ControlledTextInput = ({
       <>
         <View className="w-full bg-gray-200 rounded-md mb-5 p-0">
           <Picker
-                style={{height: 46}}
-                selectedValue={patientId}
-                onValueChange={(itemValue) => {
-                  onChange(itemValue)
-                  setPatientId(itemValue) 
-                  console.log(patientId);                  
-                } }
-              >
-                
-                <Picker.Item label="Selecione o Paciente" value="" enabled={false}  
-                style={{ 
-                  margin: 0, 
-                  padding: 0,
-                  fontSize: 13 , 
-                  color: "#68696b",
-                  }}/>
+            style={{ height: 46 }}
+            selectedValue={patientId}
+            onValueChange={(itemValue) => {
+              onChange(itemValue);
+              setPatientId(itemValue);
+            }}
+          >
+            <Picker.Item
+              label="Selecione o Paciente"
+              value=""
+              enabled={false}
+              style={{
+                margin: 0,
+                padding: 0,
+                fontSize: 13,
+                color: "#68696b",
+              }}
+            />
 
-                {patients.map((p) => (
-                  <Picker.Item key={p.id} label={p.name} value={p.id} 
-                  style={{
-                    fontSize: 13, 
-                    color: "#000"}}/>
-                ))}
+            {patients.map((p) => (
+              <Picker.Item
+                key={p.id}
+                label={p.name}
+                value={p.id}
+                style={{
+                  fontSize: 13,
+                  color: "#000",
+                }}
+              />
+            ))}
           </Picker>
         </View>
-        {error && <Text className="text-red-500 self-start mb-2 ml-2 text-xs">{error.message}</Text>}
+        {error && (
+          <Text className="text-red-500 self-start mb-2 ml-2">
+            {error.message}
+          </Text>
+        )}
       </>
-
-    )
+    );
   }
-
 
   return (
     <>
-      <TextInput className="w-full bg-gray-200 rounded-md p-3 mb-5 max-h-14"
+      <TextInput
+        className="w-full bg-gray-200 rounded-md p-3 mb-4 max-h-14"
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         keyboardType={keyboardType}
         onChangeText={(text) => {
-              if (isNumber) {
-                const formattedText = text.replace(',', '.');
-                const numericValue = Number(formattedText);
-                onChange(numericValue);
-                console.log(numericValue);
-                
-              } else {
-                onChange(text);
-                console.log(text);
-                
-              }
+          if (isNumber) {
+            const formattedText = text.replace(",", ".");
+            const numericValue = Number(formattedText);
+            onChange(numericValue);
+          } else {
+            onChange(text);
+          }
         }}
         value={value}
-        
       />
-      {error && <Text className="text-red-500 self-start mb-2 ml-2 text-xs">{error.message}</Text>}
+      {error && (
+        <Text className="text-red-500 self-start mb-3 ml-2">
+          {error.message}
+        </Text>
+      )}
     </>
   );
 };
 
 export default ControlledTextInput;
-
-
-
-
-

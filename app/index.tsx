@@ -7,7 +7,6 @@ import { useAuth } from "../components/AuthProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ControlledTextInput from "../components/ControlledTextInput";
 
-
 const loginSchema = z.object({
   registrationNumber: z.string().min(1, "CRO é obrigatório"),
   password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
@@ -32,18 +31,16 @@ const LoginScreen = () => {
 
   if (isSignedIn) {
     return <Redirect href="/profile" />;
-  } 
+  }
 
   async function handleLogin(data: LoginFormData) {
-    const success = await signIn(data.registrationNumber, data.password)
+    const success = await signIn(data.registrationNumber, data.password);
     if (success) {
       router.replace("/profile");
     } else {
       console.log("Falha no login");
     }
-
   }
-  
 
   return (
     <View className="flex-1 w-[100%] h-[100%] bg-white">

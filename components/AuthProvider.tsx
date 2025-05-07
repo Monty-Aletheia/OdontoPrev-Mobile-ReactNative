@@ -13,26 +13,28 @@ import { router } from "expo-router";
 import { CustomJwtPayload } from "../types/CustomJwtPayload";
 import { Dentist } from "../types/dentist";
 
-
-
-
 type AuthContextType = {
   signIn: (registrationNumber: string, password: string) => Promise<boolean>;
-  signUp: (name: string, specialty: string, registrationNumber: string,claimsRate: number, riskStatus: number, password: string) => Promise<boolean>;
+  signUp: (
+    name: string,
+    specialty: string,
+    registrationNumber: string,
+    claimsRate: number,
+    riskStatus: number,
+    password: string
+  ) => Promise<boolean>;
   signOut: () => void;
   userName: string;
   isSignedIn: boolean;
   getDentistById: () => Promise<void>;
   dentist: Dentist | null;
   isLoading: boolean;
-
+  updateDentist: (newName: string) => Promise<void>;
 };
-
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
-
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userName, setUserName] = useState("");
@@ -48,16 +50,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         const signedIn = await AsyncStorage.getItem("@isSignedIn");
 
         if (storedUserId && signedIn === "true") {
-          console.log(storedUserId)
-          console.log(signedIn)
           setUserId(storedUserId);
           setIsSignedIn(true);
-        } 
+        }
       } catch (e) {
         console.error("Erro ao carregar dados do AsyncStorage", e);
       } finally {
         setIsLoading(false);
-        
       }
     };
 
@@ -70,23 +69,22 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         registrationNumber,
         password,
       });
-  
+
       const { token } = response.data;
-      console.log(token)
 
       const decoded = jwtDecode<CustomJwtPayload>(token);
-      console.log(decoded)
-      const id = decoded.id
-      const username = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
-      console.log(id)
+
+      const id = decoded.id;
+      const username =
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
       await AsyncStorage.setItem("@userId", id);
       await AsyncStorage.setItem("@isSignedIn", "true");
-  
-      setUserName(username)
+
+      setUserName(username);
       setUserId(id);
       setIsSignedIn(true);
-  
+
       return true;
     } catch (error) {
       console.error("Erro no login:", error);
@@ -94,30 +92,35 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const signUp = async (name: string, specialty: string, registrationNumber: string, claimsRate: number, riskStatus: number, password: string) => {
-   try{
-    const reponse = await api.post("auth/register", {
+  const signUp = async (
+    name: string,
+    specialty: string,
+    registrationNumber: string,
+    claimsRate: number,
+    riskStatus: number,
+    password: string
+  ) => {
+    try {
+      const reponse = await api.post("auth/register", {
         name,
         specialty,
         registrationNumber,
         claimsRate,
         password,
-        riskStatus
-    });
+        riskStatus,
+      });
 
-    if (reponse.status == 200){
-        console.log("Usuario cadastrado")
-        return true
-    } else {
-        console.log("Falha ao cadastrar:", reponse.status)
-        return false
+      if (reponse.status == 200) {
+        console.log("Usuario cadastrado");
+        return true;
+      } else {
+        console.log("Falha ao cadastrar:", reponse.status);
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro durante cadastro:", error);
+      return false;
     }
-
-
-   } catch(error){
-    console.log("Erro durante cadastro:", error)
-    return false
-   }
   };
 
   const getDentistById = async () => {
@@ -125,9 +128,27 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       const response = await api.get(`/dentists/${userId}`);
       const data = response.data;
       setDentist(data);
-      console.log("Dentista encontrado:", data);
     } catch (error) {
       console.error("Erro ao buscar dentista por ID:", error);
+    }
+  };
+
+  const updateDentist = async (newName: string) => {
+    try {
+      const response = await api.put(`/dentists/${dentist?.id}`, {
+        name: newName,
+        specialty: dentist?.specialty,
+        registrationNumber: dentist?.registrationNumber,
+        claimsRate: dentist?.claimsRate,
+        riskStatus: dentist?.riskStatus,
+      });
+
+      if (response.status === 200) {
+        getDentistById();
+        setDentist(response.data);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar dentista: ", error);
     }
   };
 
@@ -137,16 +158,27 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     setIsSignedIn(false);
     await AsyncStorage.removeItem("@userId");
     await AsyncStorage.removeItem("@isSignedIn");
-    router.replace("/")
-
+    router.replace("/");
   };
 
+  const value = {
+    signIn,
+    signUp,
+    signOut,
+    userName,
+    isSignedIn,
+    userId,
+    getDentistById,
+    dentist,
+    isLoading,
+    updateDentist,
+  };
 
-  const value = { signIn, signUp, signOut, userName, isSignedIn, userId, getDentistById, dentist, isLoading };
-
-
-
-  return <AuthContext.Provider value={value}>{isLoading ? <SplashScreen /> : children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {isLoading ? <SplashScreen /> : children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = (): AuthContextType => {

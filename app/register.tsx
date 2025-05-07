@@ -38,7 +38,14 @@ const RegisterScreen = () => {
   });
 
   async function handleRegister(data: RegisterFormData) {
-    const success = await signUp(data.name, data.specialty, data.registrationNumber, data.claimsRate, data.riskStatus, data.password)
+    const success = await signUp(
+      data.name,
+      data.specialty,
+      data.registrationNumber,
+      data.claimsRate,
+      data.riskStatus,
+      data.password
+    );
     if (success) {
       router.replace("/");
     } else {

@@ -6,4 +6,4 @@ export interface Dentist {
   claimsRate: number;
   riskStatus: number;
   password: string;
-};
+}
