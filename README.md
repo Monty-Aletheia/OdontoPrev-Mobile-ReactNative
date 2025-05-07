@@ -46,8 +46,12 @@ Certifique-se de ter os seguintes softwares instalados:
 ## **Estrutura de Pastas**
 
 ```
-ALETHEIA-APP-REACT
-│── app/
+ODONTOPREV-MOBILE-REACTNATIVE
+│
+├── .expo/
+├── .vscode/
+│
+├── app/
 │   ├── (tabs)/
 │   │   ├── _layout.tsx
 │   │   ├── add.tsx
@@ -57,10 +61,31 @@ ALETHEIA-APP-REACT
 │   ├── details.tsx
 │   ├── index.tsx
 │   ├── register.tsx
-│── assets/
-│── components/
-│   ├── item.tsx
-│   ├── tabs.tsx
-
+│
+├── assets/
+│
+├── components/
+│   ├── AuthProvider.tsx
+│   ├── ControlledTextInput.tsx
+│   ├── EditNameModal.tsx
+│   ├── Item.tsx
+│   ├── SplashScreen.tsx
+│   ├── Tabs.tsx
+│
+├── service/
+│   ├── api.tsx
+│   ├── consultationService.ts
+│
+├── types/
+│   ├── consultation.ts
+│   ├── CustomJwtPayload.ts
+│   ├── dentist.ts
+│   ├── patient.ts
+│
+├── utils/
+│   ├── format.ts
+│   ├── retry.ts
+│
+├── node_modules/
 ```
 
