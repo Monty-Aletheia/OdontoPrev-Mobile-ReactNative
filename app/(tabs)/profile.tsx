@@ -1,15 +1,29 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../components/AuthProvider';
 import { Redirect } from 'expo-router';
+import api from '../../service/api';
+import EditNameModal from '../../components/EditNameModal';
 
 
 
 const Home = () => {
   const { getDentistById, isSignedIn, dentist, signOut } = useAuth();
+  const [modalVisible, setModalVisible] = useState(false)
 
-  if (!isSignedIn){
-    return <Redirect href="/"/>
+  const updateDentist = async (newName: string) => {
+    try {
+      const response = await api.put(`/dentists/${dentist?.id}`, {
+        name: newName,
+        specialty: dentist?.specialty,
+        registrationNumber: dentist?.registrationNumber,
+        claimsRate: dentist?.claimsRate,
+        riskStatus: dentist?.riskStatus
+      })
+      await getDentistById();
+    } catch(error) {
+      console.error("Erro ao atualizar dentista: ", error)
+    }
   }
 
   useEffect(() => {
@@ -18,20 +32,45 @@ const Home = () => {
     }
   }, [isSignedIn]);
 
+  if (!isSignedIn){
+    return <Redirect href="/"/>
+  }
+
   return (
-    <View className='flex-1 mt-[20%] mr-5 ml-5'>
+    <View className='flex-1 mt-[5%] mr-5 ml-5'>
+
       
-      <View className='flex-1  items-center'>
+      <View className='mt-5 flex-row w-[100%] justify-between mb-5'>
 
-        <Pressable onPress={signOut}>
+        <TouchableOpacity  onPress={() => setModalVisible(true)}>
+          <View className='items-center'>
+            <Image source={require("../../assets/images/edit_icon.png")} className="w-9 h-9" />
+            <Text className='color-dark_blue font-bold'>Editar</Text>
+          </View>
+        </TouchableOpacity>
 
-            <Image source={require("../../assets/images/user_picture.png")} className="w-52 h-52 self-center" />
+        <TouchableOpacity onPress={() => {Alert.alert(
+                          "Tem certeza?",
+                          "Você realmente deseja sair da sua conta?",
+                          [
+                            { text: "Nao", style: "cancel" },
+                            { text: "Sim", style: "default", onPress: signOut }
+                          ]
+                        );
+                        }}>
+          <View className='items-center'>
+            <Image source={require("../../assets/images/logout_icon.png")} className="w-9 h-9" />
+            <Text className='color-red-500 font-bold'>Logout</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      
+      <View className='flex-1 items-center'>
 
-        </Pressable>
-
+        <Image source={require("../../assets/images/user_picture.png")} className="w-52 h-52 self-center" />
 
         <View>
-          {dentist ? (<Text className='mt-20 color-dark_blue font-bold text-xl'>{dentist?.name}</Text>
+          {dentist ? (<Text className='mt-10 color-dark_blue font-bold text-xl text-center ml-5 mr-5'>{dentist?.name}</Text>
         ) : <Text className='mt-20 color-dark_blue font-bold text-xl'>Carregando informações...</Text>}
         </View>
 
@@ -52,10 +91,19 @@ const Home = () => {
       </View>
 
 
+      <EditNameModal
+      visible={modalVisible}
+      defaultValue={dentist?.name}
+      onCancel={() => setModalVisible(false)}
+      onSave={async (name: string) => {
+        await updateDentist(name);
+        setModalVisible(false);
+      }}
+    />
     </View>
   )
 }
 
-export default Home
 
-const styles = StyleSheet.create({})
+
+export default Home

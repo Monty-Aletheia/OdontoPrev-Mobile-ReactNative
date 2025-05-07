@@ -7,9 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ControlledTextInput from "../components/ControlledTextInput";
 import { useAuth } from "../components/AuthProvider";
 
-
-
-// Validação com zod
 const registerSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   specialty: z.string().min(1, "Especialidade é obrigatória"),
@@ -100,28 +97,6 @@ const RegisterScreen = () => {
             secureTextEntry
             error={errors.password}
           />
-
-          {/* <Text className="self-start ml-3 mb-2 color-dark_blue font-semibold">
-            Índice de Sinistros
-          </Text>
-          <ControlledTextInput
-            control={control}
-            name="claimsRate"
-            placeholder="Ex: 2.5"
-            keyboardType="numeric"
-            error={errors.claimsRate}
-          /> */}
-
-          {/* <Text className="self-start ml-3 mb-2 color-dark_blue font-semibold">
-            Status de Risco (0, 1 ou 2)
-          </Text>
-          <ControlledTextInput
-            control={control}
-            name="riskStatus"
-            placeholder="Ex: 1"
-            keyboardType="numeric"
-            error={errors.riskStatus}
-          /> */}
 
           <TouchableOpacity
             className="w-full bg-dark_blue p-3 rounded-md mb-14 mt-10"
