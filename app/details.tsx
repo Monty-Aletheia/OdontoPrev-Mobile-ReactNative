@@ -12,6 +12,7 @@ import {
   formatDate,
   formatGender,
   formatPrice,
+  formatRiskStatus,
 } from "../utils/format";
 import SplashScreen from "../components/SplashScreen";
 import {
@@ -50,6 +51,7 @@ const Details = () => {
 
   useEffect(() => {
     handleLoad();
+    
   }, []);
 
   if (isLoading || !consultation) {
@@ -143,7 +145,7 @@ const Details = () => {
                   Status de risco:
                 </Text>
                 <Text className="color-dark_blue ">
-                  {consultation.riskStatus}
+                  {formatRiskStatus(consultation.riskStatus)}
                 </Text>
               </View>
             </View>

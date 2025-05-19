@@ -8,10 +8,17 @@ export const formatName = (fullName: string): string => {
   return fullName.split(" ").slice(0, 3).join(" ");
 };
 
-export function formatGender(value: number): string {
-  if (value === 1) return "M";
-  if (value === 2) return "F";
-  if (value === 3) return "OTHER";
+export function formatGender(value: string): string {
+  if (value === "Male") return "Masculino";
+  if (value === "Female") return "Feminino";
+  if (value === "Other") return "Outro";
+  return "Desconhecido";
+}
+
+export function formatRiskStatus(value: string): string {
+  if (value === "Low") return "BAIXO";
+  if (value === "Medium") return "MEDIO";
+  if (value === "High") return "ALTO";
   return "Desconhecido";
 }
 

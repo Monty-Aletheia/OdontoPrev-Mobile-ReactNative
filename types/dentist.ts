@@ -4,6 +4,6 @@ export interface Dentist {
   specialty: string;
   registrationNumber: string;
   claimsRate: number;
-  riskStatus: number;
+  riskStatus: string;
   password: string;
 }

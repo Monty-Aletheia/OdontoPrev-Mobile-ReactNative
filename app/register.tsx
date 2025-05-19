@@ -13,7 +13,7 @@ const registerSchema = z.object({
   registrationNumber: z.string().min(1, "CRO é obrigatório"),
   password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
   claimsRate: z.coerce.number().min(0, "Índice de sinistro inválido"),
-  riskStatus: z.coerce.number().int().min(0).max(2, "Status de risco inválido"),
+  riskStatus: z.string().min(1, '')
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -33,7 +33,7 @@ const RegisterScreen = () => {
       registrationNumber: "",
       password: "",
       claimsRate: 1,
-      riskStatus: 1,
+      riskStatus: "Low",
     },
   });
 

@@ -13,7 +13,7 @@ const schema = z.object({
   consultationDate: z.string().min(1, "Informe a data"),
   consultationValue: z.number().min(1, "Informe o valor"),
   dentistIds: z.array(z.string()).min(1),
-  riskStatus: z.number().min(1),
+  riskStatus: z.string().min(1),
   description: z.string().min(0),
 });
 
@@ -32,7 +32,7 @@ const Add = () => {
       patientId: "",
       consultationDate: "",
       consultationValue: 0,
-      riskStatus: 1,
+      riskStatus: "Low",
       description: "",
       dentistIds: [dentist?.id],
     },

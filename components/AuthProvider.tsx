@@ -20,7 +20,7 @@ type AuthContextType = {
     specialty: string,
     registrationNumber: string,
     claimsRate: number,
-    riskStatus: number,
+    riskStatus: string,
     password: string
   ) => Promise<boolean>;
   signOut: () => void;
@@ -97,7 +97,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     specialty: string,
     registrationNumber: string,
     claimsRate: number,
-    riskStatus: number,
+    riskStatus: string,
     password: string
   ) => {
     try {
@@ -111,14 +111,16 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       });
 
       if (reponse.status == 200) {
-        console.log("Usuario cadastrado");
+        const status = reponse.status
+        console.log("Usuario cadastrado", status);
         return true;
       } else {
         console.log("Falha ao cadastrar:", reponse.status);
         return false;
       }
-    } catch (error) {
-      console.error("Erro durante cadastro:", error);
+    } catch (error: any) {
+      console.error("Erro durante cadastro:", error.message);
+      
       return false;
     }
   };

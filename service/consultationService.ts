@@ -30,7 +30,7 @@ export const createConsultation = async (
   consultationValue: number,
   description?: string,
   dentistIds?: string[],
-  riskStatus?: number
+  riskStatus?: string
 ) => {
   try {
     const response = await api.post("/consultations", {
